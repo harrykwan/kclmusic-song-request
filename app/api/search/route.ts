@@ -10,7 +10,10 @@ export async function GET(req: NextRequest) {
   const res = await fetch(url);
   const data = await res.json();
 
-  if (!data.items) return NextResponse.json([]);
+  if (!data.items) {
+    console.error('YouTube API error:', JSON.stringify(data));
+    return NextResponse.json({ error: data?.error?.message || 'no items', data }, { status: 500 });
+  }
 
   const results = data.items.map((item: any) => ({
     id: item.id.videoId,
